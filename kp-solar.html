@@ -78,8 +78,9 @@ button.ghost{background:rgba(255,255,255,.1)}
 <script>
 const R=1.41421;
 const PORTRAIT=innerWidth<720;
-function chrome(){return innerHeight<500?50:(PORTRAIT?118:140)}
-function pw(){if(PORTRAIT)return Math.floor(Math.min(innerWidth-16,(innerHeight-chrome())/R));const h=innerHeight-chrome(),w=innerWidth-30;return Math.floor(Math.min(h/R,w/2.02))}
+function VH(){const a=[innerHeight,document.documentElement.clientHeight];if(window.visualViewport)a.push(visualViewport.height);return Math.min(...a.filter(x=>x>0))}
+function chrome(){return VH()<500?50:(PORTRAIT?170:140)}
+function pw(){if(PORTRAIT)return Math.floor(Math.min(innerWidth*0.84,340,(VH()-chrome())/R));const h=VH()-chrome(),w=innerWidth-30;return Math.floor(Math.min(h/R,w/2.02))}
 let soundOn=true,ctx=null;
 function audio(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume()}catch(e){}}
 addEventListener('pointerdown',audio,{capture:true});addEventListener('touchstart',audio,{capture:true,passive:true});addEventListener('keydown',audio,{capture:true});
@@ -153,7 +154,7 @@ document.addEventListener('mousemove',e=>{lastMove=Date.now();if(busy)return;
  setPeel(pr,nr);setPeel(pl,nl);
  wrap.style.cursor=(nr||nl)?'grab':'';});
 function tease(){if(!busy&&Date.now()-lastMove>3000&&canNext()){place();pr.style.transition='width .45s ease,height .45s ease';setPeel(pr,55);setTimeout(()=>{if(!pr._on)setPeel(pr,0)},700)}}
-setTimeout(tease,900);teaseT=setInterval(tease,5000);
+if(!matchMedia('(pointer:coarse)').matches){setTimeout(tease,900);teaseT=setInterval(tease,5000);}
 pf.on('changeState',e=>{busy=e.data==='user_fold'||e.data==='flipping';if(busy){setPeel(pr,0);setPeel(pl,0);pr._on=pl._on=false}});
 if(TOUCH){
  const blk=()=>document.querySelector('.stf__block').getBoundingClientRect();
