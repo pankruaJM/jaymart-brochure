@@ -79,8 +79,8 @@ button.ghost{background:rgba(255,255,255,.1)}
 const R=1.41421;
 const PORTRAIT=innerWidth<720;
 function VH(){const a=[innerHeight,document.documentElement.clientHeight];if(window.visualViewport)a.push(visualViewport.height);return Math.min(...a.filter(x=>x>0))}
-function chrome(){return VH()<500?50:(PORTRAIT?170:140)}
-function pw(){if(PORTRAIT)return Math.floor(Math.min(innerWidth*0.84,340,(VH()-chrome())/R));const h=VH()-chrome(),w=innerWidth-30;return Math.floor(Math.min(h/R,w/2.02))}
+function chrome(){return VH()<500?78:(PORTRAIT?170:140)}
+function pw(){if(PORTRAIT)return Math.floor(Math.min((innerWidth-12)/2,(VH()-chrome())/R));const h=VH()-chrome(),w=innerWidth-30;return Math.floor(Math.min(h/R,w/2.02))}
 let soundOn=true,ctx=null;
 function audio(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume()}catch(e){}}
 addEventListener('pointerdown',audio,{capture:true});addEventListener('touchstart',audio,{capture:true,passive:true});addEventListener('keydown',audio,{capture:true});
@@ -101,14 +101,14 @@ function flipSound(){const t0=rustle(.8,.9,900,3800);if(t0===undefined)return;
  og.gain.setValueAtTime(0,t0+.64);og.gain.linearRampToValueAtTime(.22,t0+.67);og.gain.exponentialRampToValueAtTime(.001,t0+.85);
  o.connect(og);og.connect(ctx.destination);o.start(t0+.6);o.stop(t0+.9)}
 const TOUCH=matchMedia('(pointer:coarse)').matches;
-const W=pw();document.getElementById('wrap').style.width=(PORTRAIT?W:W*2)+'px';
+const W=pw();document.getElementById('wrap').style.width=W*2+'px';
 const pf=new St.PageFlip(document.getElementById('book'),{
- width:W,height:Math.round(W*R),size:PORTRAIT?'fixed':'stretch',useMouseEvents:!TOUCH,swipeDistance:30,minWidth:PORTRAIT?W/2+20:100,maxWidth:2400,minHeight:212,maxHeight:3394,
- showCover:true,usePortrait:true,maxShadowOpacity:.55,flippingTime:950,showPageCorners:false,
+ width:W,height:Math.round(W*R),size:PORTRAIT?'fixed':'stretch',useMouseEvents:!TOUCH,swipeDistance:30,minWidth:PORTRAIT?W:100,maxWidth:2400,minHeight:212,maxHeight:3394,
+ showCover:true,usePortrait:false,maxShadowOpacity:.55,flippingTime:950,showPageCorners:false,
  mobileScrollSupport:false,drawShadow:true,autoSize:true});
 pf.loadFromHTML(document.querySelectorAll('.page'));
 const wrap=document.getElementById('wrap');
-function fit(){if(PORTRAIT){wrap.style.width=W+'px';return}const w=pw();wrap.style.width=w*2+'px';}
+function fit(){if(PORTRAIT){wrap.style.width=W*2+'px';return}const w=pw();wrap.style.width=w*2+'px';}
 const labels=['ปกหน้า','แผนพรีเมียม | แผนมาตรฐาน','แผนพรีเมียม | แผนมาตรฐาน','ปกหลัง'];
 function ui(){const i=pf.getCurrentPageIndex(),n=pf.getPageCount(),portrait=pf.getOrientation()==='portrait';
  const shift=portrait?0:(i===0?-25:(i>=n-1?25:0));wrap.style.transform='translateX('+shift+'%)';
@@ -125,7 +125,7 @@ let W0=innerWidth;addEventListener('resize',()=>{if((innerWidth<720)!==PORTRAIT|
 document.getElementById('next').onclick=()=>{audio();pf.flipNext('bottom')};
 document.getElementById('prev').onclick=()=>{audio();pf.flipPrev('bottom')};
 addEventListener('keydown',e=>{if(e.key==='ArrowRight')pf.flipNext('bottom');if(e.key==='ArrowLeft')pf.flipPrev('bottom')});
-if(matchMedia('(pointer:coarse)').matches)document.querySelector('.hint').textContent='ปัดซ้าย-ขวา หรือแตะขอบกระดาษเพื่อพลิก 🔊 · กด 🔍 ขยายอ่าน';
+if(matchMedia('(pointer:coarse)').matches)document.querySelector('.hint').textContent='ปัดหรือแตะเพื่อพลิก 🔊 · กด 🔍 ขยายอ่าน · หมุนจอแนวนอนจะเห็นใหญ่ขึ้น';
 const srcs=[...document.querySelectorAll('#book img')].map(x=>x.src);
 const zoom=document.getElementById('zoom');
 document.getElementById('zbtn').onclick=()=>{const i=pf.getCurrentPageIndex(),portrait=pf.getOrientation()==='portrait';
